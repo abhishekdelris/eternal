@@ -533,32 +533,239 @@
 //   );
 // }
 
+// "use client";
+
+// import { useEffect, useRef, useState } from "react";
+// import Link from "next/link";
+// import Image from "next/image";
+// import { navLinks } from "@/data/content";
+
+// function LogoImage({ theme = "white", className = "" }) {
+//   const src = theme === "black" ? "/images/Logo_black.png" : "/images/Logo_white.png";
+
+//   return (
+//     <img
+//       src={src}
+//       alt="Eternal"
+//       className={className}
+//     />
+//   );
+// }
+
+// export default function Header({ theme = "white" }) {
+//   const [scrolled, setScrolled] = useState(false);
+//   const [hidden, setHidden] = useState(false);
+//   const [menuOpen, setMenuOpen] = useState(false);
+//   const [activeSubmenu, setActiveSubmenu] = useState(null);
+//   const lastScroll = useRef(0);
+//   const closeTimer = useRef(null);
+
+//   useEffect(() => {
+//     function onScroll() {
+//       const y = window.scrollY;
+
+//       if (y === 0) {
+//         setHidden(false);
+//       } else if (y > lastScroll.current && y > 100) {
+//         setHidden(true);
+//       } else if (y < lastScroll.current && y > 100) {
+//         setHidden(false);
+//       }
+//       lastScroll.current = y;
+
+//       setScrolled(y > window.innerHeight);
+//     }
+
+//     window.addEventListener("scroll", onScroll);
+//     return () => window.removeEventListener("scroll", onScroll);
+//   }, []);
+
+//   useEffect(() => {
+//     document.body.style.overflow = menuOpen ? "hidden" : "";
+//   }, [menuOpen]);
+
+//   const openSubmenu = (label) => {
+//     clearTimeout(closeTimer.current);
+//     setActiveSubmenu(label);
+//   };
+
+//   const scheduleCloseSubmenu = () => {
+//     closeTimer.current = setTimeout(() => setActiveSubmenu(null), 250);
+//   };
+
+//   useEffect(() => {
+//     return () => clearTimeout(closeTimer.current);
+//   }, []);
+
+//   const headerClass = [
+//     "site-header",
+//     "pad-h",
+//     theme === "black" ? "theme-black" : "theme-white",
+//     scrolled ? "scrolled" : "",
+//     hidden ? "header-hidden" : "",
+//   ]
+//     .filter(Boolean)
+//     .join(" ");
+
+//   return (
+//     <>
+//       <header className={headerClass}>
+//         <nav className="nav-list left desktop-only">
+//           {navLinks.left.map((item) => (
+//             <div
+//               className="nav-item"
+//               key={item.label}
+//               onMouseEnter={() => item.children && openSubmenu(item.label)}
+//               onMouseLeave={() => item.children && scheduleCloseSubmenu()}
+//             >
+//               <Link href={item.href}>{item.label}</Link>
+//               {item.children && (
+//                 <ul
+//                   className={`sub-menu ${
+//                     activeSubmenu === item.label ? "visible" : ""
+//                   }`}
+//                 >
+//                   {item.children.map((child) => (
+//                     <li key={child.label}>
+//                       <Link href={child.href}>{child.label}</Link>
+//                     </li>
+//                   ))}
+//                 </ul>
+//               )}
+//             </div>
+//           ))}
+//         </nav>
+
+//         <Link className="site-branding" href="/">
+//           <LogoImage theme={theme} />
+//         </Link>
+
+//         <nav className="nav-list right desktop-only">
+//           {navLinks.right.map((item) => (
+//             <Link key={item.label} href={item.href}>
+//               {item.label}
+//             </Link>
+//           ))}
+//         </nav>
+
+//         <button
+//           className="hamburger"
+//           aria-label="Open menu"
+//           onClick={() => setMenuOpen(true)}
+//         >
+//           <span />
+//           <span />
+//         </button>
+//       </header>
+
+//       <div className={`menu-overlay ${menuOpen ? "visible" : ""}`}>
+//         <div className="inner-wrap">
+//           <div className="top">
+//             <Link className="site-branding" href="/" onClick={() => setMenuOpen(false)}>
+//               <LogoImage theme={theme} />
+//             </Link>
+//             <button
+//               className="menu-close"
+//               aria-label="Close menu"
+//               onClick={() => setMenuOpen(false)}
+//             >
+//               ✕
+//             </button>
+//           </div>
+
+//           <div className="middle">
+//             <ul>
+//               {[...navLinks.left, ...navLinks.right].map((item) => (
+//                 <li key={item.label}>
+//                   <Link href={item.href} onClick={() => setMenuOpen(false)}>
+//                     {item.label}
+//                   </Link>
+//                 </li>
+//               ))}
+//             </ul>
+//           </div>
+
+//           <div className="bottom">
+//             <div>© Eternal 2026. All Rights Reserved</div>
+//             <Link href="/legal" onClick={() => setMenuOpen(false)}>
+//               Legal
+//             </Link>
+//           </div>
+//         </div>
+//       </div>
+//     </>
+//   );
+// }
+
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { navLinks } from "@/data/content";
 
 function LogoImage({ theme = "white", className = "" }) {
   const src = theme === "black" ? "/images/Logo_black.png" : "/images/Logo_white.png";
 
-  return (
-    <img
-      src={src}
-      alt="Eternal"
-      className={className}
-    />
-  );
+  return <img src={src} alt="Eternal" className={className} />;
 }
 
+/**
+ * Ab preloader alag component nahi hai — usi logo ko header ke andar
+ * animate karke "dock" karwa rahe hain. Sequence original jaisa hi:
+ * - t=0: bada logo (25rem), screen center, fixed position, baaki header hidden
+ * - t=1000ms: "animated" class -> shrink + top:1.25rem pe move (CSS transition)
+ * - t=2000ms: "docked" -> logo normal header flow me chala jata hai,
+ *             nav-list + hamburger fade in ho jaate hain
+ * Mobile (<=768px) pe original bhi preloader skip karta tha, isliye
+ * yahan bhi direct docked state se start hota hai.
+ */
 export default function Header({ theme = "white" }) {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState(null);
+
+  // preloader-merge phases: "intro" -> "shrink" -> "docked"
+  // Home page pe hi "intro" se start hota hai, baaki sab pages seedha "docked"
+  const [phase, setPhase] = useState(isHome ? "intro" : "docked");
+
   const lastScroll = useRef(0);
   const closeTimer = useRef(null);
+
+  // Logo animation sequence — sirf home page + desktop pe chalta hai
+  useEffect(() => {
+    if (!isHome) {
+      setPhase("docked");
+      return;
+    }
+
+    const isDesktop = window.matchMedia("(min-width: 769px)").matches;
+
+    if (!isDesktop) {
+      setPhase("docked");
+      return;
+    }
+
+    setPhase("intro");
+    document.body.style.overflow = "hidden";
+
+    const t1 = setTimeout(() => setPhase("shrink"), 1000);
+    const t2 = setTimeout(() => {
+      setPhase("docked");
+      document.body.style.overflow = "";
+    }, 2000);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      document.body.style.overflow = "";
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isHome]);
 
   useEffect(() => {
     function onScroll() {
@@ -581,8 +788,10 @@ export default function Header({ theme = "white" }) {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "";
-  }, [menuOpen]);
+    if (phase === "docked") {
+      document.body.style.overflow = menuOpen ? "hidden" : "";
+    }
+  }, [menuOpen, phase]);
 
   const openSubmenu = (label) => {
     clearTimeout(closeTimer.current);
@@ -607,10 +816,13 @@ export default function Header({ theme = "white" }) {
     .filter(Boolean)
     .join(" ");
 
+  const isPreloading = phase !== "docked";
+  const navRevealClass = `nav-reveal ${isPreloading ? "" : "nav-reveal-visible"}`;
+
   return (
     <>
       <header className={headerClass}>
-        <nav className="nav-list left desktop-only">
+        <nav className={`nav-list left desktop-only ${navRevealClass}`}>
           {navLinks.left.map((item) => (
             <div
               className="nav-item"
@@ -636,11 +848,22 @@ export default function Header({ theme = "white" }) {
           ))}
         </nav>
 
-        <Link className="site-branding" href="/">
-          <LogoImage theme={theme} />
-        </Link>
+        {/* Ek hi logo — intro/shrink phase me fixed+centered (logo-animation),
+            docked phase me normal site-branding flow me */}
+        {isPreloading ? (
+          <img
+            src={theme === "black" ? "/images/Logo_black.png" : "/images/Logo_white.png"}
+            alt="Eternal"
+            className={`logo-animation ${phase === "shrink" ? "animated" : ""}`}
+            aria-hidden="true"
+          />
+        ) : (
+          <Link className="site-branding" href="/">
+            <LogoImage theme={theme} />
+          </Link>
+        )}
 
-        <nav className="nav-list right desktop-only">
+        <nav className={`nav-list right desktop-only ${navRevealClass}`}>
           {navLinks.right.map((item) => (
             <Link key={item.label} href={item.href}>
               {item.label}
@@ -649,7 +872,7 @@ export default function Header({ theme = "white" }) {
         </nav>
 
         <button
-          className="hamburger"
+          className={`hamburger ${navRevealClass}`}
           aria-label="Open menu"
           onClick={() => setMenuOpen(true)}
         >

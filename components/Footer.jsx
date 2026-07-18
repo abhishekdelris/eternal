@@ -6,7 +6,7 @@ import Image from "next/image";
 const footerLogos = [
   "/images/social_media/dark.svg",
   "/images/social_media/trustmark_logo_light.svg",
-  "/images/social_media/logo-footer.svg",
+  "/images/social_media/sheme.png",
   "/images/social_media/logo.jpg",
   "/images/social_media/installsure-white.png",
   "/images/social_media/environment-agency.png"

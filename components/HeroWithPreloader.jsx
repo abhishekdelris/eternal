@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Preloader from "@/components/Preloader";
+// import Preloader from "@/components/Preloader";
 import Hero from "@/components/Hero";
 
 export default function HeroWithPreloader() {
@@ -11,7 +11,7 @@ export default function HeroWithPreloader() {
 
   return (
     <>
-      <Preloader onComplete={() => setReady(true)} />
+      {/* <Preloader onComplete={() => setReady(true)} /> */}
       <Hero ready={ready} />
       {/* Original theme ka scroll target down-arrow click ke liye */}
       <div className="arrow-scroll" />

@@ -240,6 +240,17 @@ p {
   opacity: 1;
 }
 
+.nav-reveal {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 500ms var(--ease-standard);
+}
+ 
+.nav-reveal-visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
 /* ==================================================================
    PRELOADER / LOGO-ANIMATION (exact original sequence)
    ================================================================== */
@@ -945,7 +956,7 @@ img.full-bleed-image {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
   border-top: 1px solid var(--border-white);
   border-bottom: 1px solid var(--border-white);
   padding: 1.25rem 2.5rem;
@@ -1218,7 +1229,7 @@ img.full-bleed-image {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
   gap: 2rem;
   border-top: 1px solid #fff;
   border-bottom: 1px solid #fff;
@@ -1883,7 +1894,7 @@ img.full-bleed-image {
 .project-detail .pd-hero {
   position: relative;
   width: 100%;
-  height: 90vh;
+  height: 100vh;
   background-size: cover;
   background-position: center;
   display: flex;
@@ -2275,7 +2286,7 @@ img.full-bleed-image {
 
   .project-detail .pd-hero--mobile {
     display: flex;
-    height: 70vh;
+    height: 100vh;
   }
 
   .project-detail .pd-intro {
@@ -2335,7 +2346,7 @@ img.full-bleed-image {
 /* Mobile phones ≤ 480px */
 @media (max-width: 480px) {
   .project-detail .pd-hero--mobile {
-    height: 60vh;
+    height: 100vh;
   }
 
   .project-detail .pd-hero__text {

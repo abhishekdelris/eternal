@@ -4,6 +4,7 @@ import { projects } from "@/data/projectsdetails";
 import ProjectHero from "@/components/ProjectHero";
 import ProjectGallerySlider from "@/components/ProjectGallerySlider";
 import RelatedProjects from "@/components/RelatedProjects";
+import BeforeAfterSlider from "@/components/BeforeAfterSlider";
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -104,7 +105,8 @@ export default function ProjectDetailPage({ params }) {
           <ProjectGallerySlider images={project.galleryImages} />
         </section>
       )}
-
+      {/* Before/After slider */}
+      <BeforeAfterSlider />
       {/* Related projects */}
       <RelatedProjects items={project.related} />
     </div>

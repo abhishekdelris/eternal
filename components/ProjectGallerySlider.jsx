@@ -192,7 +192,8 @@ export default function ProjectGallerySlider({ images = [] }) {
           --cell-h: 76vh;
           --bg: #f5f2ec;
           --ink: #2b2b28;
-
+          
+          display: flex;
           background: var(--bg);
           padding: 48px 0 64px 64px;
           overflow: hidden;

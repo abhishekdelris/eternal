@@ -7,7 +7,7 @@ import Hero from "@/components/Hero";
 export default function HeroWithPreloader() {
   // Desktop pe preloader complete hone tak hero-text hidden rehta hai
   // (jaise original theme: e(".hero-text").css("display","none") preloader ke dauraan)
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(true);
 
   return (
     <>
